@@ -48,16 +48,12 @@ def threaded_run(fc):
      fc_thread.start()
 
 def main():
-    """
     schedule.every().day.at("06:00", "Europe/Prague").do(threaded_run, run_scripts)
-    schedule.every(3).seconds.do(threaded_run, run_scripts)
+    schedule.every(30).seconds.do(threaded_run, run_scripts) # this option is for debugging, later will be deleted
 
     while True:
         schedule.run_pending()
         time.sleep(1)
-    """
-
-    run_scripts()
 
 if __name__ == '__main__':
     main()

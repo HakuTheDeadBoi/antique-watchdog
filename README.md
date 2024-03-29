@@ -2,8 +2,14 @@
 
 Antique-watchdog alias antique book store watchdog.
 
-Scheduler which allows user to import his own web scrapers to scrape the web using his own queries, creates a report and send it via email.
-Scheduler itself will only maintain scheduling scripts and collecting reports.
-Finding books (if they are available on particular store) is the matter of particular script, making a report too. Scheduler just call the script, receives a report, collect all reports, log everything and send.
+Issues:
+ - script still only prints results in terminal
+ - script can only get query with no restrictions (like just particular publisher or language or year of releasing)
+ - code looks messy
+ - script undivided into smaller functions, probably needs to refactor
+ - sometimes results are contaminated by nonsense (based on inconsistency of data)
 
-I hope it will be useful at least for me. I hope it will be fun to code.
+To do:
+ - instead of single query to allow user to define query and restrictions, probably use csv and some dict instead of single string
+ - to decide if let the program or the script to find the queries file and separate queries
+ - to make user to define time to run this script via commandline tool (and later via gui maybe?)
