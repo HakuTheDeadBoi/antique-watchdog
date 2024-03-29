@@ -4,7 +4,23 @@ import time
 import importlib
 import os
 
+class Record:
+    def __init__(self):
+        self.book = ""
+        self.author = ""
+        self.year = ""
+        self.link = ""
+        self.publisher = ""
+        self.price = ""
+
+    def __str__(self):
+        return f"{self.author} - {self.book}: {self.price}"
+    
+    def __str__(self):
+        return f"{self.author} - {self.book}: {self.price}!"
+
 def run_scripts():
+    records = []
     scripts_dir = 'scripts'
     for filename in os.listdir(scripts_dir):
         if filename.endswith('.py'):
@@ -16,22 +32,32 @@ def run_scripts():
                 print(f"Error during importing {module_name} script: {e}")
             else:
                 if hasattr(module, 'main'):
-                    message = module.main("arthur clarke")
-                    print(message)
+                    results = module.main(Record)
+                    if results:
+                        for res in results:
+                            records.append(res)
+                    
                 else:
                     print(f"Module {module_name} has no main")
+
+    for rec in records:
+        print(rec)
 
 def threaded_run(fc):
      fc_thread = threading.Thread(target=fc)
      fc_thread.start()
 
 def main():
+    """
     schedule.every().day.at("06:00", "Europe/Prague").do(threaded_run, run_scripts)
     schedule.every(3).seconds.do(threaded_run, run_scripts)
 
     while True:
         schedule.run_pending()
         time.sleep(1)
+    """
+
+    run_scripts()
 
 if __name__ == '__main__':
     main()
