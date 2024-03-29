@@ -35,7 +35,6 @@ def main(RecordClass):
     with open(f'queries/{queries_file_name}.txt') as FILE:
     
         for LINE in FILE:
-            print(f"{LINE} query now")
             if LINE.strip():
                 url = f"{base_url}/hledat?q={LINE}&type=issue"
                 response = rq.get(url)
