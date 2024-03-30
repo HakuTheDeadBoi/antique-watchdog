@@ -60,12 +60,20 @@ def main(RecordClass):
                                 record.price = span6.find("span").text
                                 record.year, record.publisher = span6.find_all("em")[0].text, span6.find_all("em")[1].text
 
+                                innerHTML = span6.decode_contents()
+                                text_after_kc = innerHTML[innerHTML.index("Kč"):]
+                                text_after_br = text_after_kc[text_after_kc.index("<br/>") + 5:]
+                                text_before_second_br = text_after_br[:text_after_br.index("<br/>")]
+                                record.author = text_before_second_br.strip()
+
+                                """
                                 author = span6.text
                                 for item in [record.book, record.price, record.year]:
                                     author = author.replace(item, '')
                                 first_following_escape_idx = author.index('\t')
                                 author = author[:first_following_escape_idx]
                                 record.author = author.strip()
+                                """
 
                                 records.append(record)
     return records

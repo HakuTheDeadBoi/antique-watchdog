@@ -7,6 +7,7 @@ import smtplib
 import datetime
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+import config
 
 ## consts
 SCRIPT_DIR = 'scripts'
@@ -47,11 +48,11 @@ def get_script_names():
 
 def send_mail(records):
     date_time_stamp = get_date_time_stamp()
-    smtp_server = ""
-    smtp_port = ""
+    smtp_server = config.smtp_server
+    smtp_port = config.smtp_port
 
-    email_address = ""
-    password = ""
+    email_address = config.user_mail
+    password = config.user_pass
     subject = f"Report: {date_time_stamp}"
     body = compose_mail_body(records, date_time_stamp)
 
@@ -106,8 +107,8 @@ def threaded_run(fc):
      fc_thread.start()
 
 def main():
+    run_scripts()
     schedule.every().day.at("06:00", "Europe/Prague").do(threaded_run, run_scripts)
-    schedule.every(30).seconds.do(threaded_run, run_scripts) # this option is for debugging, later will be deleted
 
     while True:
         schedule.run_pending()
