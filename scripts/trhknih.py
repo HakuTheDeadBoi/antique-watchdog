@@ -1,3 +1,5 @@
+## THIS SCRIPT IS VALID ##
+
 import os
 import requests as rq
 import re
@@ -53,7 +55,7 @@ def main(RecordClass):
                             span_price = span6.find("span", attrs={"class": "ask-count"})
                             if span_price:
                                 record = RecordClass()
-                                record.link = span6.find("a")["href"]
+                                record.link = f"{base_url}{span6.find("a")["href"]}"
                                 record.book = span6.find("a").text
                                 record.price = span6.find("span").text
                                 record.year, record.publisher = span6.find_all("em")[0].text, span6.find_all("em")[1].text
