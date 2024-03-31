@@ -1,16 +1,27 @@
-import threading
-import schedule
-import time
+import argparse
+import datetime
 import importlib
 import os
+import schedule
 import smtplib
-import datetime
+import threading
+import time
+
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-import config
 
 ## consts
 SCRIPT_DIR = 'scripts'
+
+day_functions = {
+    "mon": schedule.every().monday,
+    "tue": schedule.every().tuesday,
+    "wed": schedule.every().wednesday,
+    "thu": schedule.every().thursday,
+    "fri": schedule.every().friday,
+    "sat": schedule.every().saturday,
+    "sun": schedule.every().sunday
+}
 
 class Record:
     def __init__(self):
@@ -30,7 +41,7 @@ class Record:
 def get_date_time_stamp():
     now = datetime.datetime.now()
     return f"{now.year}-{now.month}-{now.day} {now.hour}:{now.minute}"
-    
+   
 def get_script_names():
     script_names = []
 
@@ -46,13 +57,13 @@ def get_script_names():
 
     return script_names
 
-def send_mail(records):
+def send_mail(records, args):
     date_time_stamp = get_date_time_stamp()
-    smtp_server = config.smtp_server
-    smtp_port = config.smtp_port
+    smtp_server = args.server
+    smtp_port = args.port
 
-    email_address = config.user_mail
-    password = config.user_pass
+    email_address = args.mail
+    password = args.password
     subject = f"Report: {date_time_stamp}"
     body = compose_mail_body(records, date_time_stamp)
 
@@ -83,7 +94,7 @@ def compose_html_table(records):
 
     return html_table
 
-def run_scripts():
+def run_scripts(args):
     records = []
 
     scripts = get_script_names()
@@ -100,15 +111,33 @@ def run_scripts():
                     for record in result:
                         records.append(record)
 
-    send_mail(records)
+    send_mail(records, args)
 
 def threaded_run(fc):
      fc_thread = threading.Thread(target=fc)
      fc_thread.start()
 
 def main():
-    run_scripts()
-    schedule.every().day.at("06:00", "Europe/Prague").do(threaded_run, run_scripts)
+    # argument parser
+    parser = argparse.ArgumentParser(description="Basic scheduler for book antique stores scrapers.")
+    parser.add_argument("--mail", required=True, help="Target email.")
+    parser.add_argument("--password", required=True, help="Mail password.")
+    parser.add_argument("--server", required=True, help="Mail SMTP server.")
+    parser.add_argument("--port", required=True, help="SMTP server port.")
+    group = parser.add_mutually_exclusive_group(required=True)
+
+    group.add_argument("--daily", nargs=1, help="Run daily, followed by time in format hh:mm.")
+    group.add_argument("--hourly", nargs=1, help="Run hourly, followed by time to start first call in format hh:mm.")
+    group.add_argument("--weekly", nargs=2, help="Run weekly, followed by day and time in format mon|tue|wed|thu|fri|sat|sun hh:dd")
+
+    args = parser.parse_args()
+
+    if args.daily:
+        schedule.every().day.at(args.daily[0]).do(threaded_run, lambda: run_scripts(args))
+    elif args.hourly:
+        schedule.every().hour.at(args.hourly[0]).do(threaded_run, lambda: run_scripts(args))
+    else:
+        day_functions[args.weekly[0]].at(args.weekly[1]).do(threaded_run, lambda: run_scripts(args))
 
     while True:
         schedule.run_pending()
