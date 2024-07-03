@@ -1,0 +1,8 @@
+# ignore virtual environment
+.venv/
+
+# ignore any __pycache__ occurence
+**/__pycache__/**
+
+# ignore configuration
+config.json
