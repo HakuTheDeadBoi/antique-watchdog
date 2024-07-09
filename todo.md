@@ -12,7 +12,7 @@ A list of missing things, additional features and stuff "TO DO".
 ## Features
 
 - [ ] implement report mail composing & sending
-- [ ] implement scraper manager above scrapers
+- [x] implement scraper manager above scrapers
 - [ ] add timestamp formatting
 - [ ] implement logging
 - [ ] implement scheduling
