@@ -4,8 +4,9 @@ import os
 from types import ModuleType
 from unidecode import unidecode
 
-from aw import ROOT_DIR
+from aw import ROOT_DIR, CONFIG_FILE
 from aw.constraint import Constraint
+from aw.error import CloseThreadError
 from aw.query import Query
 from aw.record import Record
 from aw.scraper import Scraper
@@ -23,10 +24,20 @@ class ScraperManager:
         Returns:
             str: The relative directory path where scraper modules are located.
         """
-        with open(os.path.join(ROOT_DIR, "config.json"), "r") as FILE:
-            data = json.load(FILE)
+        try:
+            with open(os.path.join(ROOT_DIR, CONFIG_FILE), "r") as FILE:
+                data = json.load(FILE)
+        except json.JSONDecodeError as e:
+            raise CloseThreadError(f"JSON parsed unsuccessfully: {e}") 
+        except IOError as e:
+            raise CloseThreadError(f"Problem reading file: {e}")
 
-        return data.get("SCRAPERS_DIR")
+        scrapers_dir = data.get("SCRAPERS_DIR")
+
+        if scrapers_dir:
+            return scrapers_dir
+        else:
+            raise CloseThreadError("SCRAPERS_DIR not in config.json!")
     
     @classmethod
     def _get_files_from_scrapers_directory(cls, dir_name:str) -> list[str]:
@@ -39,8 +50,11 @@ class ScraperManager:
         Returns:
             List[str]: A list of Python file names in the directory.
         """
-        py_files_list = [file for file in os.listdir(dir_name) if file.endswith(".py")]
-        return py_files_list
+        try:
+            py_files_list = [file for file in os.listdir(dir_name) if file.endswith(".py")]
+            return py_files_list
+        except IOError as e:
+            raise CloseThreadError(f"Error accessing directory '{dir_name}': {e}")
     
     @classmethod
     def _get_modules_from_py_files(cls, py_files: list[str], scrapers_dir: str) -> list[ModuleType]:
@@ -57,16 +71,19 @@ class ScraperManager:
         modules_list = []
 
         for py_file in py_files:
-            relative_path = os.path.join(scrapers_dir, py_file)
-            spec = importlib.util.spec_from_file_location(os.path.splitext(py_file)[0], relative_path)
-            module = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(module)
-            modules_list.append(module)
+            try:
+                relative_path = os.path.join(scrapers_dir, py_file)
+                spec = importlib.util.spec_from_file_location(os.path.splitext(py_file)[0], relative_path)
+                module = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(module)
+                modules_list.append(module)
+            except (FileNotFoundError, ImportError, AttributeError) as e:
+                raise CloseThreadError(f"Error importing module: {e}")
 
         return modules_list
     
     @classmethod
-    def _get_scrapers_from_modules(cls, modules_list: list[ModuleType]) -> list[type]:
+    def _get_scrapers_from_modules(cls, modules_list: list[ModuleType]) -> list[type[Scraper]]:
         """
         Extract scraper classes from a list of modules.
 
@@ -80,9 +97,12 @@ class ScraperManager:
 
         for module in modules_list:
             for object_name in dir(module):
-                object = getattr(module, object_name, None)
-                if isinstance(object, type) and issubclass(object, Scraper) and not issubclass(Scraper, object):
-                    scrapers_list.append(object)
+                try:
+                    object = getattr(module, object_name, None)
+                    if isinstance(object, type) and issubclass(object, Scraper) and not issubclass(Scraper, object):
+                        scrapers_list.append(object)
+                except AttributeError as e:
+                    raise CloseThreadError(f"Error accessing object {object_name} in module {module.__name__}: {e}")
 
         return scrapers_list
     
@@ -98,12 +118,16 @@ class ScraperManager:
         Returns:
             bool: True if the record passes the constraint, False otherwise.
         """
-        record_value = getattr(record, constraint.key)
-        operation = getattr(cls, f"_{constraint.relation}")
-        
-        final_constraint_value = cls.asciize(constraint.value) if constraint.asciize else constraint.value
-        final_record_value = cls.asciize(record_value) if constraint.asciize else record_value
-        
+        try:
+            record_value = getattr(record, constraint.key)
+            operation = getattr(cls, f"_{constraint.relation}")
+            
+            final_constraint_value = cls.asciize(constraint.value) if constraint.asciize else constraint.value
+            final_record_value = cls.asciize(record_value) if constraint.asciize else record_value
+
+        except AttributeError as e:
+            raise CloseThreadError(f"Error trying to get attribute {constraint.key} value from {record}: {e}")
+            
         return operation(final_record_value, final_constraint_value)
 
 
