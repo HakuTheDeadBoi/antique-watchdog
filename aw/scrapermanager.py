@@ -10,6 +10,7 @@ from aw.error import CloseThreadError
 from aw.query import Query
 from aw.record import Record
 from aw.scraper import Scraper
+from aw.util import config_loader
 
 class ScraperManager:
     """
@@ -24,20 +25,9 @@ class ScraperManager:
         Returns:
             str: The relative directory path where scraper modules are located.
         """
-        try:
-            with open(os.path.join(ROOT_DIR, CONFIG_FILE), "r") as FILE:
-                data = json.load(FILE)
-        except json.JSONDecodeError as e:
-            raise CloseThreadError(f"JSON parsed unsuccessfully: {e}") 
-        except IOError as e:
-            raise CloseThreadError(f"Problem reading file: {e}")
+        config_dict = config_loader(["SCRAPERS_DIR"])
 
-        scrapers_dir = data.get("SCRAPERS_DIR")
-
-        if scrapers_dir:
-            return scrapers_dir
-        else:
-            raise CloseThreadError("SCRAPERS_DIR not in config.json!")
+        return config_dict["SCRAPERS_DIR"]
     
     @classmethod
     def _get_files_from_scrapers_directory(cls, dir_name:str) -> list[str]:
@@ -96,10 +86,10 @@ class ScraperManager:
         scrapers_list = []
 
         for module in modules_list:
-            for object_name in dir(module):
+            for object_name in dir(module): # dir(module) lists all object names in module as strings
                 try:
-                    object = getattr(module, object_name, None)
-                    if isinstance(object, type) and issubclass(object, Scraper) and not issubclass(Scraper, object):
+                    object = getattr(module, object_name, None) # try to access attribute by it's name, third arg says return None if nothing found
+                    if isinstance(object, type) and issubclass(object, Scraper) and not issubclass(Scraper, object): # exclude Scraper itself, include only subclasses
                         scrapers_list.append(object)
                 except AttributeError as e:
                     raise CloseThreadError(f"Error accessing object {object_name} in module {module.__name__}: {e}")
