@@ -1,10 +1,8 @@
 import importlib
-import json
 import os
 from types import ModuleType
 from unidecode import unidecode
 
-from aw import ROOT_DIR, CONFIG_FILE
 from aw.constraint import Constraint
 from aw.error import CloseThreadError
 from aw.query import Query
