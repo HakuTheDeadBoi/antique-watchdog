@@ -92,7 +92,3 @@ class Mailer:
 
             if result != {}:
                 raise CloseThreadError("Email sending was not successful.")
-
-
-    
-
