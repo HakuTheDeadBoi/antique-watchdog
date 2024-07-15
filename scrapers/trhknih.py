@@ -161,9 +161,6 @@ class TrhknihScraper(Scraper):
 
         Returns:
             list[Record]: A list of Record objects representing the search results.
-
-        Raises:
-            CloseThreadError: If there is an error during the scraping process.
         """
         results = []
 
