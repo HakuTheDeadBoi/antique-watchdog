@@ -2,18 +2,34 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib
 
+from aw import (
+    SERVER_ADDR_KEY,
+    SERVER_PORT_KEY,
+    LOGIN_MAIL_KEY,
+    LOGIN_PASSWORD_KEY,
+    TARGET_MAIL_KEY
+)
 from aw.util import config_loader
 from aw.error import CloseThreadError
 
 class Mailer:
     @classmethod
     def _load_config(cls) -> dict[str]:
+        """
+        Loads the mail server configuration from the configuration file.
+
+        The configuration includes server address, server port, login email, 
+        login password, and target email.
+
+        Returns:
+            dict[str]: A dictionary containing the configuration values.
+        """
         keys = [
-            "SERVER_ADDR",
-            "SERVER_PORT",
-            "LOGIN_MAIL",
-            "LOGIN_PASSWORD",
-            "TARGET_MAIL"
+            SERVER_ADDR_KEY,
+            SERVER_PORT_KEY,
+            LOGIN_MAIL_KEY,
+            LOGIN_PASSWORD_KEY,
+            TARGET_MAIL_KEY 
         ]
 
         config_dict = config_loader(keys)
@@ -22,6 +38,15 @@ class Mailer:
 
     @classmethod
     def _compose_html_records_table(cls, records: list["Record"]) -> str: # type: ignore
+        """
+        Composes an HTML table from a list of records.
+
+        Args:
+            records (list[Record]): A list of Record objects to be included in the table.
+
+        Returns:
+            str: An HTML string representing the table with the records.
+        """
         table_header = """\
             <th>Book</th>
             <th>Author</th>
@@ -54,6 +79,15 @@ class Mailer:
     
     @classmethod
     def _compose_html_document(cls, html_table: str) -> str:
+        """
+        Composes an HTML document from the given HTML table.
+
+        Args:
+            html_table (str): An HTML string representing the table.
+
+        Returns:
+            str: A complete HTML document as a string.
+        """
         html_document = f"""
             <html>
                 <head>
@@ -70,6 +104,17 @@ class Mailer:
     
     @classmethod
     def _create_mail(cls, html_document: str, sender: str, recipient: str) -> MIMEMultipart:
+        """
+        Creates an email message with the given HTML document.
+
+        Args:
+            html_document (str): The HTML content of the email.
+            sender (str): The sender's email address.
+            recipient (str): The recipient's email address.
+
+        Returns:
+            MIMEMultipart: The email message object.
+        """
         message = MIMEMultipart()
         message["From"] = sender
         message["To"] = recipient
@@ -79,16 +124,35 @@ class Mailer:
         return message
     
     @classmethod
-    def send_mail(cls, records: list["Record"]) -> int: # type: ignore
+    def send_mail(cls, records: list["Record"]) -> dict: # type: ignore
+        """
+        Creates an email message with the given HTML document.
+
+        Args:
+            html_document (str): The HTML content of the email.
+            sender (str): The sender's email address.
+            recipient (str): The recipient's email address.
+
+        Returns:
+            MIMEMultipart: The email message object.
+        """
         cf = cls._load_config()
 
         html_table = cls._compose_html_records_table(records)
         html_document = cls._compose_html_document(html_table)
-        message = cls._create_mail(html_document, cf["LOGIN_MAIL"], cf["TARGET_MAIL"])
+        message = cls._create_mail(html_document, cf[LOGIN_MAIL_KEY], cf[TARGET_MAIL_KEY])
 
-        with smtplib.SMTP_SSL(cf["SERVER_ADDR"], cf["SERVER_PORT"]) as server:
-            server.login(cf["LOGIN_MAIL"], cf["LOGIN_PASSWORD"])
-            result = server.send_message(message)
+        result = {}
 
-            if result != {}:
-                raise CloseThreadError("Email sending was not successful.")
+        try:
+            with smtplib.SMTP_SSL(cf[SERVER_ADDR_KEY], cf[SERVER_PORT_KEY]) as server:
+                server.login(cf[LOGIN_MAIL_KEY], cf[LOGIN_PASSWORD_KEY])
+                result = server.send_message(message)
+        except smtplib.SMTPAuthenticationError as e:
+            raise CloseThreadError(f"Autenthication to mail server failed: {e}")
+        except smtplib.SMTPConnectError as e:
+            raise CloseThreadError(f"Connection to SMTO server failed: {e}")
+        except smtplib.SMTPException as e:
+            raise CloseThreadError(f"Unexpected error during SMTP connection: {e}")
+        
+        return result
