@@ -1,7 +1,9 @@
 import requests as rq
+from requests import RequestException
 from bs4 import BeautifulSoup
 from bs4.element import Tag
 
+from aw.error import CloseThreadError
 from aw.record import Record
 from aw.scraper import Scraper
 
@@ -23,6 +25,15 @@ class TrhknihScraper(Scraper):
 
     @classmethod
     def _compose_url(cls, query_string: str) -> str:
+        """
+        Composes the full URL for the search query.
+
+        Args:
+            query_string (str): The search query string.
+
+        Returns:
+            str: The full URL for the search query.
+        """
         full_url = \
             cls.BASE_URL + "/" \
             + cls.ENDPOINT + "?" \
@@ -33,36 +44,75 @@ class TrhknihScraper(Scraper):
     
     @classmethod
     def _make_soup(cls, url: str) -> BeautifulSoup:
-        response = rq.get(url)
-        page_html_content = response.text
-        soup = BeautifulSoup(page_html_content, "html.parser")
+        """
+        Fetches the content of the given URL and parses it into a BeautifulSoup object.
+
+        Args:
+            url (str): The URL to fetch.
+
+        Returns:
+            BeautifulSoup: The parsed HTML content.
+
+        Raises:
+            CloseThreadError: If there is an issue with the network request.
+        """
+        try:
+            response = rq.get(url)
+            page_html_content = response.text
+            soup = BeautifulSoup(page_html_content, "html.parser")
+        except RequestException as e:
+            raise CloseThreadError(f"Request to {url} failed: {e}")
 
         return soup
     
     @classmethod
     def _get_serp_item_class_elements(cls, soup: BeautifulSoup) -> list[Tag]:
+        """
+        Extracts the search result items from the BeautifulSoup object.
+
+        Args:
+            soup (BeautifulSoup): The parsed HTML content.
+
+        Returns:
+            list[Tag]: A list of BeautifulSoup Tag objects representing the search result items.
+        """
         return soup.find_all("div", attrs={"class": "serp-item"})
 
     @classmethod
     def _get_record_from_element(cls, serp_item: Tag) -> "Record":
-        span6_div = serp_item.find("div", attrs={"class": "span6"})
-        span6_p = span6_div.find("p")
-        book_name_a = span6_p.find("a")
+        """
+        Extracts a Record object from a search result item.
 
-        book_name = book_name_a.get_text().strip()
+        Args:
+            serp_item (Tag): The BeautifulSoup Tag object representing the search result item.
 
-        link = cls.BASE_URL + book_name_a["href"]
+        Returns:
+            Record: The extracted Record object.
 
-        price_span = span6_p.find("span", attrs={"class": "ask-count label label-success"})
-        price = price_span.get_text().strip()
+        Raises:
+            CloseThreadError: If the expected elements are not found in the search result item.
+        """
+        try:
+            span6_div = serp_item.find("div", attrs={"class": "span6"})
+            span6_p = span6_div.find("p")
+            book_name_a = span6_p.find("a")
 
-        year_em = span6_p.find("em")
-        year = year_em.get_text().strip()
+            book_name = book_name_a.get_text().strip()
 
-        publisher_em = year_em.next_sibling.next_sibling
-        publisher = publisher_em.get_text().strip()
+            link = cls.BASE_URL + book_name_a["href"]
 
-        author = year_em.previous_sibling.previous_sibling.strip()
+            price_span = span6_p.find("span", attrs={"class": "ask-count label label-success"})
+            price = price_span.get_text().strip()
+
+            year_em = span6_p.find("em")
+            year = year_em.get_text().strip()
+
+            publisher_em = year_em.next_sibling.next_sibling
+            publisher = publisher_em.get_text().strip()
+
+            author = year_em.previous_sibling.previous_sibling.strip()
+        except AttributeError as e:
+            raise CloseThreadError(f"Error while trying to scrape book information: {e}")
 
         record = Record(
             name = book_name,
@@ -77,6 +127,15 @@ class TrhknihScraper(Scraper):
     
     @classmethod
     def _get_next_page_url(cls, soup: BeautifulSoup) -> str | None:
+        """
+        Extracts the URL of the next page of search results, if available.
+
+        Args:
+            soup (BeautifulSoup): The parsed HTML content.
+
+        Returns:
+            str | None: The URL of the next page of search results, or None if there is no next page.
+        """
         paging_navigation_div = soup.find("div", attrs={"class": "pagination pagination-large pagination-left"})
 
         if paging_navigation_div is None:
@@ -94,6 +153,18 @@ class TrhknihScraper(Scraper):
         
     @classmethod
     def get_results(cls, query_string: str) -> list[Record]:
+        """
+        Retrieves the search results for the given query string.
+
+        Args:
+            query_string (str): The search query string.
+
+        Returns:
+            list[Record]: A list of Record objects representing the search results.
+
+        Raises:
+            CloseThreadError: If there is an error during the scraping process.
+        """
         results = []
 
         url = cls._compose_url(query_string)
