@@ -6,6 +6,10 @@
 
 # ignore configuration
 config.json
+config.notjson
 
 # ignore my test files
 run_test.py
+queries.json
+
+.mypy_cache
