@@ -3,6 +3,8 @@ import os
 from types import ModuleType
 from unidecode import unidecode
 
+from aw import SCRAPERS_DIR_KEY
+
 from aw.constraint import Constraint
 from aw.error import CloseThreadError
 from aw.query import Query
@@ -23,9 +25,9 @@ class ScraperManager:
         Returns:
             str: The relative directory path where scraper modules are located.
         """
-        config_dict = config_loader(["SCRAPERS_DIR"])
+        config_dict = config_loader([SCRAPERS_DIR_KEY])
 
-        return config_dict["SCRAPERS_DIR"]
+        return config_dict[SCRAPERS_DIR_KEY]
     
     @classmethod
     def _get_files_from_scrapers_directory(cls, dir_name:str) -> list[str]:
