@@ -3,9 +3,10 @@ from pathlib import Path
 # root directory where the whole project is placed
 ROOT_DIR = Path(__file__).parent.parent
 
-# config file names relative to ROOT_DIR
+# file names
 CONFIG_FILE = "config.json"
 CONFIG_NOTJSON_FILE = "config.notjson"
+QUERIES_FILE = "queries.json"
 
 # config keys, used at various places to read values from config
 SERVER_ADDR_KEY = "SERVER_ADDR"
