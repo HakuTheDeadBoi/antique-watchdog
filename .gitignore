@@ -11,5 +11,6 @@ config.notjson
 # ignore my test files
 run_test.py
 queries.json
+queries_full.json
 
 .mypy_cache
