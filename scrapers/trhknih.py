@@ -94,23 +94,24 @@ class TrhknihScraper(Scraper):
         """
         try:
             span6_div = serp_item.find("div", attrs={"class": "span6"})
-            span6_p = span6_div.find("p")
-            book_name_a = span6_p.find("a")
+            span6_p = span6_div.find("p") if span6_div else None
 
-            book_name = book_name_a.get_text().strip()
+            book_name_a = span6_p.find("a") if span6_p else None
 
-            link = cls.BASE_URL + book_name_a["href"]
+            book_name = book_name_a.get_text().strip() if book_name_a else "" 
 
-            price_span = span6_p.find("span", attrs={"class": "ask-count label label-success"})
-            price = price_span.get_text().strip()
+            link = cls.BASE_URL + book_name_a["href"] if book_name_a else ""
 
-            year_em = span6_p.find("em")
-            year = year_em.get_text().strip()
+            price_span = span6_p.find("span", attrs={"class": "ask-count label label-success"}) if span6_p else None
+            price = price_span.get_text().strip() if price_span else ""
 
-            publisher_em = year_em.next_sibling.next_sibling
-            publisher = publisher_em.get_text().strip()
+            year_em = span6_p.find("em") if span6_p else None
+            year = year_em.get_text().strip() if year_em else ""
 
-            author = year_em.previous_sibling.previous_sibling.strip()
+            publisher_em = year_em.next_sibling.next_sibling if year_em else None
+            publisher = publisher_em.get_text().strip() if publisher_em else ""
+
+            author = year_em.previous_sibling.previous_sibling.strip() if isinstance(year_em.previous_sibling.previous_sibling, str) else ""
         except AttributeError as e:
             raise CloseThreadError(f"Error while trying to scrape book information: {e}")
 
