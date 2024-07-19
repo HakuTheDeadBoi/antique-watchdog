@@ -150,9 +150,14 @@ class ScraperManager:
         filtered_res = []
 
         for result in unfiltered_results:
+            is_passing = False
             for constraint in constraints:
                 if cls._validate_result(result, constraint) == True:
-                    filtered_res.append(result)
+                    is_passing = True
+                    break
+            
+            if is_passing:
+                filtered_res.append(result)
 
         return filtered_res
 
