@@ -177,18 +177,3 @@ class TrhknihScraper(Scraper):
             url = cls._get_next_page_url(soup)
         
         return results
-
-    
-
-
-
-
-
-
-
-
-    
-
-
-
-        
