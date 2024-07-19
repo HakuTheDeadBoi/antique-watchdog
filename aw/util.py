@@ -70,3 +70,6 @@ def load_queries() -> list[Query]:
         query_list.append(query)
 
     return query_list
+
+def save_queries():
+    pass
