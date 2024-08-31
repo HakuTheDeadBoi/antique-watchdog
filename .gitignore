@@ -1,0 +1,17 @@
+# ignore virtual environment
+.venv/
+
+# ignore any __pycache__ occurence
+**/__pycache__/**
+
+# ignore configuration
+config.json
+config.notjson
+
+# ignore my test files
+run_test.py
+queries.yaml
+config.ini
+queries.json
+
+.mypy_cache
