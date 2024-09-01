@@ -29,3 +29,25 @@ WEEKDAY = "weekday"
 CE_WIDTH = 800
 CE_HEIGHT = 800
 CE_TITLE = "ConfigEditor"
+
+# day - number map
+DAY_TO_INT_MAP = {
+    "monday": "0",
+    "tuesday": "1",
+    "wednesday": "2",
+    "thursday": "3",
+    "friday": "4",
+    "saturday": "5",
+    "sunday": "6"
+}
+
+# number - day map
+INT_TO_DAY_MAP = {
+    "0": "monday",
+    "1": "tuesday",
+    "2": "wednesday",
+    "3": "thursday",
+    "4": "friday",
+    "5": "saturday",
+    "6": "sunday",
+}

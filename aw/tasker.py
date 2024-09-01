@@ -22,4 +22,6 @@ class Tasker:
             logger.log_error(f"Thread unexpectedly closed: {e}")
         except QueriesNotLoadedError:
             logger.log_error("Queries couldn't be loaded. Thread closed.")
+        except Exception as e:
+            logger.log_error(f"Uncaught exception: {e}")
         

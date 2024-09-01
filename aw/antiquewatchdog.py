@@ -6,9 +6,9 @@ from aw.querymanager import QueryManager
 from aw.scheduler import Scheduler
 
 class AntiqueWatchdog:
-    def __init__(self):
-        self.config = Config()
-        self.querymanager = QueryManager()
+    def __init__(self, config: Config|None = None, qm: QueryManager|None = None):
+        self.config = config or Config()
+        self.querymanager = qm or QueryManager()
         self.scheduler = Scheduler(self.config, self.querymanager)
     
     def run(self):

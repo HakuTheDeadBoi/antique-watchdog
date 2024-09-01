@@ -4,6 +4,7 @@ from time import sleep
 
 from aw import CE_WIDTH, CE_HEIGHT, CE_TITLE
 from aw import LOGIN, PASSWORD, RECIPIENT, SERVER, PORT, TIME, PERIOD, WEEKDAY
+from aw import DAY_TO_INT_MAP, INT_TO_DAY_MAP
 from aw.config import Config
 from aw.validator import Validator
 
@@ -66,6 +67,7 @@ class ConfigEditor:
         )
         self._login_entry = tk.Entry(self._left_column)
         self._login_entry.grid(column=1, row=0, pady=5)
+        self._login_entry.insert(0, self._aw_config.get_key(LOGIN))
 
         tk.Label(self._left_column, text="password:").grid(
             column=0,
@@ -75,6 +77,7 @@ class ConfigEditor:
         )
         self._password_entry = tk.Entry(self._left_column, show="*")
         self._password_entry.grid(column=1, row=1, pady=5)
+        self._password_entry.insert(0, self._aw_config.get_key(PASSWORD))
 
         tk.Label(self._left_column, text="recipient:").grid(
             column=0,
@@ -84,6 +87,7 @@ class ConfigEditor:
         )
         self._recipient_entry = tk.Entry(self._left_column)
         self._recipient_entry.grid(column=1, row=2, pady=5)
+        self._recipient_entry.insert(0, self._aw_config.get_key(RECIPIENT))
 
         tk.Label(self._left_column, text="server:").grid(
             column=0,
@@ -93,6 +97,7 @@ class ConfigEditor:
         )
         self._server_entry = tk.Entry(self._left_column)
         self._server_entry.grid(column=1, row=3, pady=5)
+        self._server_entry.insert(0, self._aw_config.get_key(SERVER))
 
         tk.Label(self._left_column, text="port:").grid(
             column=0,
@@ -102,6 +107,7 @@ class ConfigEditor:
         )
         self._port_entry = tk.Entry(self._left_column)
         self._port_entry.grid(column=1, row=4, pady=5)
+        self._port_entry.insert(0, self._aw_config.get_key(PORT))
 
         # right column widgets
         tk.Label(self._right_column, text="time: (format: HH:MM)").grid(
@@ -112,6 +118,7 @@ class ConfigEditor:
         )
         self._time_entry = tk.Entry(self._right_column)
         self._time_entry.grid(column=1, row=0, pady=5)
+        self._time_entry.insert(0, self._aw_config.get_key(TIME))
 
         tk.Label(self._right_column, text="weekday:").grid(
             column=0,
@@ -133,6 +140,7 @@ class ConfigEditor:
             state="readonly"
         )
         self._weekday_cbox.grid(column=1, row=1, pady=5)
+        self._weekday_cbox.set(INT_TO_DAY_MAP[self._aw_config.get_key(WEEKDAY)])
 
         tk.Label(self._right_column, text="period:").grid(
             column=0,
@@ -150,6 +158,7 @@ class ConfigEditor:
             state="readonly"
         )
         self._period_cbox.grid(column=1, row=2, pady=5)
+        self._period_cbox.set(self._aw_config.get_key(PERIOD))
 
         self._submit_button = tk.Button(
             master=self._right_column,
@@ -209,11 +218,11 @@ class ConfigEditor:
                 LOGIN: self._login_entry.get(),
                 PASSWORD: self._password_entry.get(),
                 RECIPIENT: self._recipient_entry.get(),
-                SERVER: self._recipient_entry.get(),
+                SERVER: self._server_entry.get(),
                 PORT: self._port_entry.get(),
                 TIME: self._time_entry.get(),
                 PERIOD: self._period_cbox.get(),
-                WEEKDAY: self._weekday_cbox.get()
+                WEEKDAY: DAY_TO_INT_MAP[self._weekday_cbox.get()]
             })
             status = "Everything is okay, saved into file."
 

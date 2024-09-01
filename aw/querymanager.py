@@ -58,13 +58,14 @@ class QueryManager:
         )
     
     def _to_constraint(self, con_dict: dict) -> Constraint:
-        return Constraint(
-            id = con_dict["id"],
-            key = con_dict["key"],
-            value = con_dict["value"],
-            relation = con_dict["relation"],
-            asciize = con_dict["asciize"]
-        )
+        if con_dict:
+            return Constraint(
+                id = con_dict["id"],
+                key = con_dict["key"],
+                value = con_dict["value"],
+                relation = con_dict["relation"],
+                asciize = con_dict["asciize"]
+            )
 
     def fetch_queries(self) -> list[Query]:
         with self._queries_file_lock:
