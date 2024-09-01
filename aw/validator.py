@@ -29,17 +29,3 @@ class Validator:
         pattern = r'^(?:[01][0-9]|[2][0-3]):[0-5]{1}[0-9]{1}$'
         return re.match(pattern, time) is not None
 
-if __name__ == '__main__':
-    print(Validator.validate_email("hdhd@mail.com"))
-    print(Validator.validate_email("hdhd@mail.ccm"))
-    print(Validator.validate_email("hdhd@com"))
-
-    print(Validator.validate_time("05:05"))
-    print(Validator.validate_time("eddeeef"))
-
-    print(Validator.validate_port("555"))
-    print(Validator.validate_port("fff"))
-
-    print(Validator.validate_server("hhaha.com"))
-    print(Validator.validate_server("dewewfwef"))
-

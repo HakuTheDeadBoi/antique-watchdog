@@ -4,7 +4,7 @@ import logging
 import os
 from os.path import join
 
-from aw import ROOT_DIR, LOG_DIR, LOG_FILE
+from aw import ROOT_DIR, LOG_DIR
 
 class Logger:
     def __init__(self):
@@ -21,14 +21,11 @@ class Logger:
         self._formatter = logging.Formatter('%(asctime)s:: %(levelname)s -- %(message)s')
         self._file_handler.setFormatter(self._formatter)
         self._logger.addHandler(self._file_handler)
-
+        
     def log_error(self, msg: str) -> None:
         self._logger.error(msg)
 
     def log_success(self, msg: str) -> None:
         self._logger.info(msg)
 
-if __name__ == '__main__':
-    logger = Logger()
-    logger.log_success("HAHA MEME")
-    logger.log_error("PRuSR")
+logger = Logger()

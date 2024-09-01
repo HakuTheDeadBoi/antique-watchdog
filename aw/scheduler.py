@@ -5,6 +5,7 @@ from time import sleep
 from aw import TIME, PERIOD, WEEKDAY
 from aw import SLEEP_SCHEDULER_CYCLE_FOR_MINUTE
 from aw.config import Config
+from aw.logger import logger
 from aw.querymanager import QueryManager
 from aw.tasker import Tasker
 
@@ -42,12 +43,13 @@ class Scheduler:
 
     def enable(self):
         if self.config.is_valid():
+            logger.log_success("Scheduler enabled.")
             self.enabled = True
         else:
-            pass
-            # log unsuccessful attempt to enable scheduler
+            logger.log_error("Scheduler enable failed due to invalid configuration.")
 
     def disable(self):
+        logger.log_success("Scheduler disabled.")
         self.enabled = False
 
     def start(self):
@@ -63,7 +65,9 @@ class Scheduler:
                     tasker_thread = threading.Thread(target=Tasker.do_task, args=(self.config, self.query_manager))
                     tasker_thread.setDaemon(True)
                     tasker_thread.start()
+                    logger.log_success("Scheduled task started.")
                 except Exception as e:
+                    logger.log_error(f"Scheduled task halted: {e}")
                     print("Closed for unknown reason: {e}")
 
                 sleep(SLEEP_SCHEDULER_CYCLE_FOR_MINUTE)

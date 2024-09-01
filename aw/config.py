@@ -4,6 +4,7 @@ from os.path import join
 
 from aw import ROOT_DIR, CONFIG_FILE, CONFIG_SECTION_HEADER
 from aw import LOGIN, PASSWORD, RECIPIENT, SERVER, PORT, TIME, PERIOD, WEEKDAY
+from aw.logger import logger
 from aw.validator import Validator
 
 class Config:
@@ -22,15 +23,15 @@ class Config:
         except FileNotFoundError:
             self._create_new_file()
         except IOError as e:
-            # log: error loading config file, left empty
-            # or raise error
-            pass
+            logger.log_error("Unable to load config from file.")
+            raise IOError from e
 
     def _create_new_file(self) -> None:
         try:
             open(self._filepath, "w")
         except IOError as e:
-            raise Exception("Error creating file, halting program.")
+            logger.log_error("Unable to create a new config file.")
+            raise IOError from e
 
     def _save_file(self) -> None:
         try:
@@ -38,7 +39,8 @@ class Config:
                 self._parser.write(file)
                 file.close()
         except IOError as e:
-            raise Exception("Error writing to file, halting program.")
+            logger.log_error("Unable to save config into file.")
+            raise IOError from e
         
     def is_valid(self) -> bool:
         is_valid = True
@@ -54,8 +56,9 @@ class Config:
     def _get_key(self, key: str) -> str:
         try:
             return self._parser[CONFIG_SECTION_HEADER][key]
-        except KeyError:
-            raise KeyError(f"Key {key} missing.")
+        except KeyError as e:
+            logger.log_error(f"Unable to get value of config key {key}.")
+            raise KeyError from e
     
     def get_key(self, key: str) -> str:
         with self._io_lock:
@@ -87,7 +90,8 @@ class Config:
                 self._scheduler_up_to_date = False
             self._parser[CONFIG_SECTION_HEADER][key] = value
         except KeyError as e:
-            raise Exception("Unable to edit a key, halting program.")
+            logger.log_error(f"Unable to set config key {key} to value {value}")
+            raise KeyError from e
         
     def set_key(self, key: str, value: str) -> None:
         with self._io_lock:

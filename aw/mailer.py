@@ -108,12 +108,15 @@ class Mailer:
         Returns:
             MIMEMultipart: The email message object.
         """
-        cf_dict = config.get_mailer_keys()
-        login = cf_dict[LOGIN]
-        password = cf_dict[PASSWORD]
-        recipient = cf_dict[RECIPIENT]
-        server = cf_dict[SERVER]
-        port = cf_dict[PORT]
+        try:
+            cf_dict = config.get_mailer_keys()
+            login = cf_dict[LOGIN]
+            password = cf_dict[PASSWORD]
+            recipient = cf_dict[RECIPIENT]
+            server = cf_dict[SERVER]
+            port = cf_dict[PORT]
+        except KeyError as e:
+            raise CloseThreadError from e
 
         html_table = cls._compose_html_records_table(records)
         html_document = cls._compose_html_document(html_table)

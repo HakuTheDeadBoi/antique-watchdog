@@ -7,6 +7,7 @@ from aw import SCRAPERS_DIR
 
 from aw.constraint import Constraint
 from aw.error import CloseThreadError
+from aw.logger import logger
 from aw.query import Query
 from aw.record import Record
 from aw.scraper import Scraper
@@ -163,6 +164,7 @@ class ScraperManager:
         for query in queries:
             unfiltered_results_per_query = []
             for scraper in scrapers:
+                logger.log_success(f"Scraping {scraper.BASE_URL} with query {query.query_string} started.")
                 unfiltered_results_per_scraper = scraper.get_results(query.query_string)
                 unfiltered_results_per_query.extend(unfiltered_results_per_scraper)
      

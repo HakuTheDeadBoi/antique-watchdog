@@ -9,7 +9,6 @@ QUERIES_FILE = "queries.json"
 QUERIES_YAML_FILE = "queries.yaml"
 SCRAPERS_DIR = "scrapers"
 LOG_DIR = "logs"
-LOG_FILE = "aw_log"
 
 # other stuff
 REQUEST_GET_TIMEOUT_LIMIT = 10

@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 from bs4.element import Tag
 
 from aw import REQUEST_GET_TIMEOUT_LIMIT
+from aw.logger import logger
 from aw.error import CloseThreadError, SkipRecordError
 from aw.record import Record
 from aw.scraper import Scraper
@@ -171,18 +172,8 @@ class TrhknihScraper(Scraper):
                     record = cls._get_record_from_element(item)
                     results.append(record)
                 except SkipRecordError as e:
-                    # log skipping record
-                    pass
+                    logger.log_error("Record skipped.")
 
             url = cls._get_next_page_url(soup)
         
         return results
-    
-if __name__ == '__main__':
-    try:
-        egan_res = TrhknihScraper.get_results("greg egan")
-        print("egan should give results: ", egan_res != [])
-        dfjodsfjklfsdklsfdjfkld_res = TrhknihScraper.get_results("dfjodsfjklfsdklsfdjfkld")
-        print("dfjodsfjklfsdklsfdjfkld should give zero results", dfjodsfjklfsdklsfdjfkld_res == [])
-    except CloseThreadError as e:
-        print(f"running offline should throw this error: {e}")
