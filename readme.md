@@ -27,21 +27,21 @@ Navigate into directory:
 Run REPL:
 
     python -m run
-    
+
 Commands:
-    config - open ConfigEditor, tool which allow you to configure app in runtime
-    query - opne QueryEditor - not implemented yet
-    exit - exists program
-    everything else - ignored by REPL
+    - config - open ConfigEditor, tool which allow you to configure app in runtime
+    - query - opne QueryEditor - not implemented yet
+    - exit - exists program
+    - everything else - ignored by REPL
 
 ## Features
 
 It is build with those modules:
-    BeautifulSoup: for scraping web and parsing
-    requests: for handling https requests
-    PyYAML: for handling queries in .yaml format
-    Unidecode: for translating non-ascii regional chars into ASCII equivalent
-    email-validator: for formal email address validating (not ensuring address really exists)
+    - BeautifulSoup: for scraping web and parsing
+    - requests: for handling https requests
+    - PyYAML: for handling queries in .yaml format
+    - Unidecode: for translating non-ascii regional chars into ASCII equivalent
+    - email-validator: for formal email address validating (not ensuring address really exists)
 
 ## Contributing
 
