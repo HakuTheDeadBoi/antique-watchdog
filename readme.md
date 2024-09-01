@@ -21,9 +21,13 @@ need to have rights to modify its root directory.
 
 ## Usage
 Navigate into directory:
+
     cd antique-watchdog
+
 Run REPL:
+
     python -m run
+    
 Commands:
     config - open ConfigEditor, tool which allow you to configure app in runtime
     query - opne QueryEditor - not implemented yet
