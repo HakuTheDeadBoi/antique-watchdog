@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from time import sleep
 
 from aw import CE_WIDTH, CE_HEIGHT, CE_TITLE
 from aw import LOGIN, PASSWORD, RECIPIENT, SERVER, PORT, TIME, PERIOD, WEEKDAY
@@ -159,7 +160,8 @@ class ConfigEditor:
 
         self._exit_button = tk.Button(
             master=self._right_column,
-            text="EXIT"
+            text="EXIT",
+            command=self._exit
         )
         self._exit_button.grid(column=1, row=4, padx=10, pady=10)
 
@@ -217,6 +219,14 @@ class ConfigEditor:
 
         self._messages_text_area.delete(1.0, tk.END)
         self._messages_text_area.insert(tk.END, status)
+
+    def _exit(self):
+        if self._aw_config.is_valid():
+            self._window.destroy()
+        else:
+            self._messages_text_area.delete(1.0, tk.END)
+            self._messages_text_area.insert(tk.END, "Exiting aborted, please save valid config.")
+
 
 if __name__ == '__main__':
     cf = Config()
