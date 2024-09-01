@@ -1,6 +1,6 @@
 # ANTTIQUE WATCHDOG v3.0
 
-Scheduler over "book antique store" scrapers, allowing you to automatize controlling and keeping up with second hand book issues, making you never miss any rare book!
+Scheduler over "book antique store" scrapers, allowing you to automatize controling and keeping up with second hand book issues, making you never miss any rare book!
 
 ## Table of Contents:
 
@@ -12,25 +12,42 @@ Scheduler over "book antique store" scrapers, allowing you to automatize control
 - [Contact](#contact)
 
 ## Installation
+For installation clone this source code anywhere you want into your computer,
+but consider not putting into Program Files or such folders, app manipulates with files and
+need to have rights to modify its root directory.
 
-Installation guide is not ready yet. :-)
+    git clone https://github.com/HakuTheDeadBoi/antique-watchdog
+    python -m pip install -r requirements.txt
 
 ## Usage
-
-Nothing to use yet.
+Navigate into directory:
+    cd antique-watchdog
+Run REPL:
+    python -m run
+Commands:
+    config - open ConfigEditor, tool which allow you to configure app in runtime
+    query - opne QueryEditor - not implemented yet
+    exit - exists program
+    everything else - ignored by REPL
 
 ## Features
 
-It doesn't work yet - so no features.
+It is build with those modules:
+    BeautifulSoup: for scraping web and parsing
+    requests: for handling https requests
+    PyYAML: for handling queries in .yaml format
+    Unidecode: for translating non-ascii regional chars into ASCII equivalent
+    email-validator: for formal email address validating (not ensuring address really exists)
 
 ## Contributing
 
-For any case.
+Just my work now.
 
 ## License
 
-Need to learn about licenses later.
+Eat it if you want LICENSE. :-)
+Will be updated once.
 
 ## Contact
 
-Email: muffitoftea@outlook.cz
+Email: HakuTheDeadBoi@protonmail.com
