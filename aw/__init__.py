@@ -24,3 +24,8 @@ PORT = "port"
 TIME = "time"
 PERIOD = "period"
 WEEKDAY = "weekday"
+
+# ConfigEditor
+CE_WIDTH = 800
+CE_HEIGHT = 800
+CE_TITLE = "ConfigEditor"
