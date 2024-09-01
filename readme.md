@@ -49,7 +49,7 @@ Just my work now.
 
 ## License
 
-Eat it if you want LICENSE. :-)
+Eat it if you want LICENSE. :-) :-)
 Will be updated once.
 
 ## Contact
