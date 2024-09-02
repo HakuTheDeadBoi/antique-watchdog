@@ -1,0 +1,16 @@
+- id: 1
+  query_string: "greg egan"
+  asciize: true
+  constraint_list: []
+- id: 2
+  query_string: "Turingův test"
+  asciize: true
+  constraint_list: []
+- id: 3
+  query_string: "murakami"
+  asciize: true
+  constraint_list: []
+- id: 4
+  query_string: "cesta na gateway"
+  asciize: true
+  constraint_list: []

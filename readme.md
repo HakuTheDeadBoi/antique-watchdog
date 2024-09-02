@@ -2,6 +2,9 @@
 
 Scheduler over "book antique store" scrapers, allowing you to automatize controling and keeping up with second hand book issues, making you never miss any rare book!
 
+This is my first project on my journey to become a software developer.
+I follow (I at least hope) good practices and try to make code maintainable, modular and extensible, although they are and they will mistakes I discover and repair later.
+
 ## Table of Contents:
 
 - [Installation](#installation)
@@ -28,11 +31,22 @@ Run REPL:
 
     python -m run
 
+![ConfigEditor form](readme_img/configform_example.png)
+First ConfigEditor pops up and lets you to submit configuration before scheduler actually runs.
+
+QueryEditor is still missing, user has to manually edit queries.yaml file, but editor which will pop up after ConfigEditor will follow soon.
+
+![REPL](readme_img/repl_example.png)
+REPL loop allows you to invoke editors again and modify queries and config during runtime. More commands still wait to be implemented.
+
 Commands:
     - config - open ConfigEditor, tool which allow you to configure app in runtime
     - query - opne QueryEditor - not implemented yet
     - exit - exists program
     - everything else - ignored by REPL
+
+![Final mail report](readme_img/mail_example.png)
+This is final mail report. Is looks ugly but I am working on making it look better.
 
 ## Features
 
