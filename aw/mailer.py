@@ -29,7 +29,7 @@ class Mailer:
             <th>Link</th>
         """
 
-        html_table = f"<table border='1'><tr>{table_header}</tr>"
+        html_table = f"<table border='1' padding='2'><tr>{table_header}</tr>"
         html_table_closing = "</table>"
 
         for rec in records:

@@ -6,7 +6,7 @@ from unidecode import unidecode
 from aw import SCRAPERS_DIR
 
 from aw.constraint import Constraint
-from aw.error import CloseThreadError
+from aw.error import CloseThreadError, SkipScraperError
 from aw.logger import logger
 from aw.query import Query
 from aw.record import Record
@@ -135,6 +135,10 @@ class ScraperManager:
 
         for result in unfiltered_results:
             is_passing = False
+
+            if not constraints:
+                is_passing = True
+
             for constraint in constraints:
                 if cls._validate_result(result, constraint) == True:
                     is_passing = True
@@ -156,21 +160,26 @@ class ScraperManager:
         Returns:
             List[Record]: A list of filtered result records.
         """
-        files = cls._get_files_from_scrapers_directory(SCRAPERS_DIR)
-        modules = cls._get_modules_from_py_files(files, SCRAPERS_DIR)
-        scrapers = cls._get_scrapers_from_modules(modules)
-        filtered_results = []
+        try:
+            files = cls._get_files_from_scrapers_directory(SCRAPERS_DIR)
+            modules = cls._get_modules_from_py_files(files, SCRAPERS_DIR)
+            scrapers = cls._get_scrapers_from_modules(modules)
+            filtered_results = []
 
-        for query in queries:
-            unfiltered_results_per_query = []
-            for scraper in scrapers:
-                logger.log_success(f"Scraping {scraper.BASE_URL} with query {query.query_string} started.")
-                unfiltered_results_per_scraper = scraper.get_results(query.query_string)
-                unfiltered_results_per_query.extend(unfiltered_results_per_scraper)
-     
-            filtered_results.extend(cls._filter_results(query.constraint_list, unfiltered_results_per_query))
+            for query in queries:
+                unfiltered_results_per_query = []
+                for scraper in scrapers:
+                    try:
+                        logger.log_success(f"Scraping {scraper.BASE_URL} with query {query.query_string} started.")
+                        unfiltered_results_per_scraper = scraper.get_results(query.query_string)
+                        unfiltered_results_per_query.extend(unfiltered_results_per_scraper)
+                        filtered_results.extend(cls._filter_results(query.constraint_list, unfiltered_results_per_query))
+                    except SkipScraperError as e:
+                        logger.log_error(f"Scraper {scraper.BASE_URL} is skipped: {e}")
 
-        return filtered_results
+            return filtered_results
+        except Exception as e:
+            raise CloseThreadError(f"Uncaught exception: {e}") from e
     
     ##################################
     ###### comparison functions ######

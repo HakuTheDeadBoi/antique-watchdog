@@ -19,16 +19,18 @@ class Config:
     def _load_file(self) -> None:
         try:
             self._parser.clear()
-            self._parser.read(self._filepath)
-        except FileNotFoundError:
-            self._create_new_file()
+            result = self._parser.read(self._filepath)
+            if not result:
+                self._create_new_file()
+                self._parser.read(self._filepath)
         except IOError as e:
             logger.log_error("Unable to load config from file.")
             raise IOError from e
 
     def _create_new_file(self) -> None:
         try:
-            open(self._filepath, "w")
+            with open(self._filepath, "w") as file:
+                file.write("[settings]\n")
         except IOError as e:
             logger.log_error("Unable to create a new config file.")
             raise IOError from e
