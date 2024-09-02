@@ -98,15 +98,18 @@ class Mailer:
     @classmethod
     def send_mail(cls, records: list["Record"], config: Config) -> dict: # type: ignore
         """
-        Creates an email message with the given HTML document.
-
+        Composes HTML mail response containing list of Record objects
+        and sends mail via smtp server according to configuration provided.
+        
         Args:
-            html_document (str): The HTML content of the email.
-            sender (str): The sender's email address.
-            recipient (str): The recipient's email address.
+            records (list[Record]): list of Record objects representing a book record
+            config (Config): configuration handler
+
+        Raises:
+            CloseThreadError
 
         Returns:
-            MIMEMultipart: The email message object.
+            dict: messages which were not successfully sent, if empty, sending was successful
         """
         try:
             cf_dict = config.get_mailer_keys()

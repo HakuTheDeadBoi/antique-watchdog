@@ -1,12 +1,31 @@
 class CloseThreadError(Exception):
-    """Exception indicating that a thread should be closed without stopping the scheduler."""
-    pass
+    """
+    Exception raised when a thread should be closed without stopping the scheduler.
+
+    This exception indicates that a specific thread needs to be terminated, but 
+    the scheduler should continue running.
+    """
 
 class SkipRecordError(Exception):
-    """Exception indicating record wasn't successfully fetched and should not be included."""
+    """
+    Exception raised when a record was not successfully fetched and should be excluded.
+
+    This exception signifies that a particular record could not be retrieved or 
+    processed correctly and therefore should not be included in further operations.
+    """
 
 class SkipScraperError(Exception):
-    """Exception indicating scraper can't be used and it should be skipped."""
+    """
+    Exception raised when a scraper cannot be used and should be skipped.
+
+    This exception indicates that the scraper in question is not functional or 
+    suitable for use in the current context and should be bypassed.
+    """
 
 class QueriesNotLoadedError(Exception):
-    """Exception indicating queries cannot be loaded from file."""
+    """
+    Exception raised when queries cannot be loaded from a file.
+
+    This exception is used when there is an issue with reading or parsing query 
+    definitions from a file, which prevents the queries from being loaded properly.
+    """

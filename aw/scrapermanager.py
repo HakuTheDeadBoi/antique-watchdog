@@ -22,7 +22,7 @@ class ScraperManager:
             dir_name (str): The directory name where scraper modules are located.
 
         Returns:
-            List[str]: A list of Python file names in the directory.
+            List[str]: A list of Python file names (without directories).
         """
         try:
             py_files_list = [file for file in os.listdir(dir_name) if file.endswith(".py")]
@@ -156,6 +156,9 @@ class ScraperManager:
 
         Args:
             queries (List[Query]): A list of queries to execute.
+
+        Raises:
+            CloseThreadError
 
         Returns:
             List[Record]: A list of filtered result records.

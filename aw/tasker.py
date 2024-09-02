@@ -8,6 +8,16 @@ from aw.querymanager import QueryManager
 class Tasker:
     @classmethod
     def do_task(cls, config: Config, qm: QueryManager) -> None:
+        """
+        Executes the main task of fetching queries, scraping results, and sending emails.
+
+        Args:
+            config (Config): Configuration object containing email and other settings.
+            qm (QueryManager): Manages query fetching from the data source.
+
+        Returns:
+            None
+        """
         try:
             queries = qm.fetch_queries()
             logger.log_success("Queries fetched successfully.")

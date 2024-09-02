@@ -9,7 +9,40 @@ from aw.config import Config
 from aw.validator import Validator
 
 class ConfigEditor:
+    """
+    A graphical user interface (GUI) for editing configuration settings.
+
+    This class provides a Tkinter-based interface to load, modify, and save
+    configuration settings related to mailer and scheduler configurations.
+    
+    Attributes:
+        _aw_config (Config): The configuration handler instance.
+        _window (tk.Tk): The main Tkinter window.
+        _left_column (tk.LabelFrame): Frame for mailer configuration widgets.
+        _right_column (tk.LabelFrame): Frame for scheduler configuration widgets.
+        _lower_text_area (tk.LabelFrame): Frame for displaying messages.
+        _login_entry (tk.Entry): Entry widget for the login field.
+        _password_entry (tk.Entry): Entry widget for the password field.
+        _recipient_entry (tk.Entry): Entry widget for the recipient field.
+        _server_entry (tk.Entry): Entry widget for the server field.
+        _port_entry (tk.Entry): Entry widget for the port field.
+        _time_entry (tk.Entry): Entry widget for the time field.
+        _weekday_cbox (ttk.Combobox): Combo box for selecting the weekday.
+        _period_cbox (ttk.Combobox): Combo box for selecting the period.
+        _submit_button (tk.Button): Button to save the configuration.
+        _exit_button (tk.Button): Button to exit the application.
+        _messages_text_area (tk.Text): Text area for displaying messages.
+    """
     def __init__(self, config: Config = None) -> None:
+        """
+        Initializes the ConfigEditor with the provided configuration.
+
+        Args:
+            config (Config, optional): An instance of the Config class to load initial values from.
+        
+        Sets up the main window, frames, widgets, and loads configuration values into the widgets.
+        """
+
         # reference to config handler
         self._aw_config = config
         # main window
@@ -182,15 +215,38 @@ class ConfigEditor:
         self._messages_text_area.pack()
 
     def run(self):
+        """
+        Starts the Tkinter event loop to display the GUI and handle user interactions.
+
+        This method enters the Tkinter main loop, making the window visible and responsive.
+        """
         self._window.mainloop()
 
     def _load_value(self, widget: tk.Widget, key: str):
+        """
+        Loads and sets the value of a widget based on the provided configuration key.
+
+        Args:
+            widget (tk.Widget): The widget to update with the configuration value.
+            key (str): The key to retrieve the value from the configuration.
+        
+        If the key is not found in the configuration, no changes are made to the widget.
+        """
         try:
             widget.insert(0, self._aw_config.get_key(key))
         except KeyError:
             pass
 
     def _all_entries_valid(self) -> tuple[bool, str]:
+        """
+        Validates all entry fields in the GUI.
+
+        Returns:
+            tuple[bool, str]: A tuple where the first element is a boolean indicating if all entries are valid,
+                              and the second element is a message describing any validation errors.
+        
+        This method checks the validity of each input field using the Validator class and constructs an error message if any field is invalid.
+        """
         is_valid = True
         message = ""
 
@@ -217,6 +273,13 @@ class ConfigEditor:
         return (is_valid, message)
 
     def _submit(self):
+        """
+        Handles the submission of the configuration form.
+
+        Validates the entries, saves the configuration if all entries are valid, and displays a status message.
+
+        The method updates the configuration with the values from the widgets and displays a success or error message in the text area.
+        """
         is_valid, status = self._all_entries_valid()
 
         if is_valid:
@@ -236,6 +299,13 @@ class ConfigEditor:
         self._messages_text_area.insert(tk.END, status)
 
     def _exit(self):
+        """
+        Handles the exit action for the application.
+
+        If the configuration is valid, the window is closed. If the configuration is not valid, an error message is displayed and the window remains open.
+        
+        This method checks the validity of the current configuration and determines whether to exit the application or prompt the user to correct the configuration.
+        """
         if self._aw_config.is_valid():
             self._window.destroy()
         else:
