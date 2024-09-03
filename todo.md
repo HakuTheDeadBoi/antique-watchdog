@@ -11,14 +11,20 @@ A list of missing things, additional features and stuff "TO DO".
 
 ## Features
 
-- [x] implement report mail composing & sending
-- [x] implement scraper manager above scrapers
-- [ ] add timestamp formatting
-- [ ] implement logging
-- [x] implement scheduling
+- [ ] Add password encryption
+- [ ] Add QueryEditor form in tkinter
 
 ## Bugs
 
+- [ ] Refactor error handling
+- [ ] Improve docstrings
+- [ ] Improve logged messages
+
 ## Enhancements
 
+- [ ] More command and control for REPL loop
+- [ ] Enhance logging unexpected exceptions with ability to save traceback into separate file.
+
 ## Miscellaneous
+
+- nothing yet
