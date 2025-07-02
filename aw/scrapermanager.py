@@ -176,9 +176,9 @@ class ScraperManager:
                         logger.log_success(f"Scraping {scraper.BASE_URL} with query {query.query_string} started.")
                         unfiltered_results_per_scraper = scraper.get_results(query.query_string)
                         unfiltered_results_per_query.extend(unfiltered_results_per_scraper)
-                        filtered_results.extend(cls._filter_results(query.constraint_list, unfiltered_results_per_query))
                     except SkipScraperError as e:
                         logger.log_error(f"Scraper {scraper.BASE_URL} is skipped: {e}")
+                filtered_results.extend(cls._filter_results(query.constraint_list, unfiltered_results_per_query))
 
             return filtered_results
         except Exception as e:
@@ -187,47 +187,20 @@ class ScraperManager:
     ##################################
     ###### comparison functions ######
     ##################################
+    """
+    Comparison functions designed to perform certain constraint check.
+    """
 
     @classmethod
     def _eq(cls, record_value: str, constraint_value: str) -> bool:
-        """
-        Check if record_value is equal to constraint_value.
-
-        Args:
-            record_value (str): The value from the record.
-            constraint_value (str): The value from the constraint.
-
-        Returns:
-            bool: True if record_value is equal to constraint_value, False otherwise.
-        """
         return record_value == constraint_value
 
     @classmethod
     def _nq(cls, record_value: str, constraint_value: str) -> bool:
-        """
-        Check if record_value is not equal to constraint_value.
-
-        Args:
-            record_value (str): The value from the record.
-            constraint_value (str): The value from the constraint.
-
-        Returns:
-            bool: True if record_value is not equal to constraint_value, False otherwise.
-        """
         return record_value != constraint_value
 
     @classmethod
     def _gt(cls, record_value: str, constraint_value: str) -> bool:
-        """
-        Check if record_value is greater than constraint_value.
-
-        Args:
-            record_value (str): The value from the record.
-            constraint_value (str): The value from the constraint.
-
-        Returns:
-            bool: True if record_value is greater than constraint_value, False otherwise.
-        """
         try:
             return int(record_value) > int(constraint_value)
         except ValueError:
@@ -235,16 +208,6 @@ class ScraperManager:
 
     @classmethod
     def _ge(cls, record_value: str, constraint_value: str) -> bool:
-        """
-        Check if record_value is greater than or equal to constraint_value.
-
-        Args:
-            record_value (str): The value from the record.
-            constraint_value (str): The value from the constraint.
-
-        Returns:
-            bool: True if record_value is greater than or equal to constraint_value, False otherwise.
-        """
         try:
             return int(record_value) >= int(constraint_value)
         except ValueError:
@@ -252,16 +215,6 @@ class ScraperManager:
 
     @classmethod
     def _lt(cls, record_value: str, constraint_value: str) -> bool:
-        """
-        Check if record_value is less than constraint_value.
-
-        Args:
-            record_value (str): The value from the record.
-            constraint_value (str): The value from the constraint.
-
-        Returns:
-            bool: True if record_value is less than constraint_value, False otherwise.
-        """
         try:
             return int(record_value) < int(constraint_value)
         except ValueError:
@@ -269,16 +222,6 @@ class ScraperManager:
 
     @classmethod
     def _le(cls, record_value: str, constraint_value: str) -> bool:
-        """
-        Check if record_value is less than or equal to constraint_value.
-
-        Args:
-            record_value (str): The value from the record.
-            constraint_value (str): The value from the constraint.
-
-        Returns:
-            bool: True if record_value is less than or equal to constraint_value, False otherwise.
-        """
         try:
             return int(record_value) <= int(constraint_value)
         except ValueError:
@@ -286,28 +229,8 @@ class ScraperManager:
 
     @classmethod
     def _in(cls, record_value: str, constraint_value: str) -> bool:
-        """
-        Check if constraint_value is in record_value.
-
-        Args:
-            record_value (str): The value from the record.
-            constraint_value (str): The value from the constraint.
-
-        Returns:
-            bool: True if constraint_value is in record_value, False otherwise.
-        """
         return constraint_value in record_value
 
     @classmethod
     def _ni(cls, record_value: str, constraint_value: str) -> bool:
-        """
-        Check if constraint_value is not in record_value.
-
-        Args:
-            record_value (str): The value from the record.
-            constraint_value (str): The value from the constraint.
-
-        Returns:
-            bool: True if constraint_value is not in record_value, False otherwise.
-        """
         return constraint_value not in record_value
