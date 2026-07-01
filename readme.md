@@ -63,9 +63,4 @@ Just my work now.
 
 ## License
 
-Eat it if you want LICENSE. :-) :-)
-Will be updated once.
-
-## Contact
-
-Email: HakuTheDeadBoi@protonmail.com
+No license yet.
