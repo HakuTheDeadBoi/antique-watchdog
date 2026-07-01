@@ -1,4 +1,4 @@
-# ANTTIQUE WATCHDOG v3.0
+# ANTIQUE WATCHDOG v3.0
 
 Scheduler over "book antique store" scrapers, allowing you to automatize controling and keeping up with second hand book issues, making you never miss any rare book!
 
